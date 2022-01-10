@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<package format="2">
+<package format="3">
   <name>ixblue_ins_msgs</name>
-  <version>0.1.5</version>
+  <version>0.2.0</version>
   <description>The ixblue INS defined messages package</description>
 
   <maintainer email="adrien.barral@ixblue.com">Adrien BARRAL</maintainer>
   <maintainer email="romain.reignier@ixblue.com">Romain REIGNIER</maintainer>
+  <maintainer email="alaa@forssea-robotics.fr">Alaa EL JAWAD</maintainer>
 
   <license>MIT</license>
 
@@ -13,19 +14,24 @@
 
   <author email="adrien.barral@ixblue.com">Adrien BARRAL</author>
   <author email="laure.le-breton@ixblue.com">Laure LE BRETON</author>
+  <author email="alaa@forssea-robotics.fr">Alaa EL JAWAD</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <build_depend>geometry_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
-  <build_depend>message_generation</build_depend>
+  <build_depend>rosidl_default_generators</build_depend>
 
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
-  <build_export_depend>message_runtime</build_export_depend>
 
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
-  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  
+  <member_of_group>rosidl_interface_packages</member_of_group>
 
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>
