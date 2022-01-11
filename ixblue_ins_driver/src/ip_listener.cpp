@@ -1,9 +1,11 @@
 #include "ip_listener.h"
-#include <ros/console.h>
 
 using namespace boost::asio;
 
-IPListener::IPListener(const std::string& ip, uint16_t port) : ip(ip), port(port) {}
+IPListener::IPListener(const std::string & ip, uint16_t port, const rclcpp::Node::SharedPtr & node)
+  : ip(ip), port(port),
+    rosPublisher(node)
+{}
 
 IPListener::~IPListener()
 {
@@ -24,14 +26,13 @@ void IPListener::onNewDataReceived(const boost::system::error_code& error,
     {
         // We don't publish a diagnostics here, they will be handled in an higher level.
         // If there is an error, there is no parse, so diagnostic updater will detect it.
-        ROS_WARN_STREAM("Error occurs in IP Listener : " << error.message());
-    }
-    else
-    {
-        ROS_DEBUG_STREAM("Received StdBin data");
+        RCLCPP_WARN_STREAM(
+          rclcpp::get_logger(
+            "ip_listener"), "Error occurs in IP Listener : " << error.message());
+    } else {
+        RCLCPP_DEBUG_STREAM(rclcpp::get_logger("ip_listener"), "Received StdBin data");
         // No errors, we can parse it :
-        try
-        {
+        try {
             parser.addNewData(datas.data(), bytes_transfered);
             while(parser.parseNextFrame())
             {
@@ -42,7 +43,7 @@ void IPListener::onNewDataReceived(const boost::system::error_code& error,
         }
         catch(const std::runtime_error& e)
         {
-            ROS_WARN_STREAM("Parse error : " << e.what());
+            RCLCPP_WARN_STREAM(rclcpp::get_logger("ip_listener"), "Parse error : " << e.what());
             // TODO : Publish a diagnostic
         }
     }

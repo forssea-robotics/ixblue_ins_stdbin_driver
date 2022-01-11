@@ -7,10 +7,10 @@ class UDPListener : public IPListener
 {
     UDPListener() = delete;
 public:
-    UDPListener(const std::string& ip, uint16_t port);
+    UDPListener(const std::string& ip, uint16_t port, const rclcpp::Node::SharedPtr& node);
 
 protected:
-    void listenNextData();
+    void listenNextData() override;
     boost::asio::ip::udp::socket socket;
     boost::asio::ip::udp::endpoint endpoint;
 };

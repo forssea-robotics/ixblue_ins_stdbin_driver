@@ -5,7 +5,7 @@
 #include <boost/asio.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/system/error_code.hpp>
-#include <inttypes.h>
+#include <cinttypes>
 #include <ixblue_stdbin_decoder/stdbin_decoder.h>
 #include <string>
 #include <thread>
@@ -24,7 +24,7 @@ class IPListener : private boost::noncopyable
     IPListener() = delete;
 
 public:
-    IPListener(const std::string& ip, uint16_t port);
+    IPListener(const std::string& ip, uint16_t port, const rclcpp::Node::SharedPtr& node);
     virtual ~IPListener();
 
     void onNewDataReceived(const boost::system::error_code& error,
@@ -35,7 +35,7 @@ protected:
      * This is the pro-actor pattern implemented by boost asio. Each daughter class
      * must use this abstract method to listen next data.
      */
-    virtual void listenNextData(void) = 0;
+    virtual void listenNextData() = 0;
     const std::string ip;
     const uint16_t port;
 

@@ -1,41 +1,43 @@
 #pragma once
 
-#include <ixblue_ins_msgs/Ins.h>
+#include <ixblue_ins_msgs/msg/ins.hpp>
 #include <ixblue_stdbin_decoder/data_models/nav_header.h>
 #include <ixblue_stdbin_decoder/data_models/stdbin.h>
 
-#include <ros/node_handle.h>
-#include <ros/publisher.h>
-#include <sensor_msgs/Imu.h>
-#include <sensor_msgs/NavSatFix.h>
-#include <sensor_msgs/TimeReference.h>
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/imu.hpp>
+#include <sensor_msgs/msg/nav_sat_fix.hpp>
+#include <sensor_msgs/msg/time_reference.hpp>
 
 #include "diagnostics_publisher.h"
 
 class ROSPublisher
 {
 public:
-    ROSPublisher();
+    explicit ROSPublisher(rclcpp::Node::SharedPtr node);
     void onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
                          const ixblue_stdbin_decoder::Data::NavHeader& headerData);
 
     // Standard ros msgs
-    static sensor_msgs::ImuPtr
-    toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
-             bool use_compensated_acceleration);
-    static sensor_msgs::NavSatFixPtr
-    toNavSatFixMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
-    static sensor_msgs::TimeReferencePtr
-    toTimeReference(const ixblue_stdbin_decoder::Data::NavHeader& headerData);
+    static bool toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav & navData,
+                         bool use_compensated_acceleration,
+                         sensor_msgs::msg::Imu & imu_msg);
+
+    static bool toNavSatFixMsg(const ixblue_stdbin_decoder::Data::BinaryNav & navData,
+                               sensor_msgs::msg::NavSatFix & navsat_msg);
+
+    bool toTimeReference(const ixblue_stdbin_decoder::Data::NavHeader & headerData,
+                                sensor_msgs::msg::TimeReference & time_ref_msg);
 
     // iXblue ros msgs
-    static ixblue_ins_msgs::InsPtr
-    toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData);
+    static bool toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav & navData,
+                    ixblue_ins_msgs::msg::Ins & ix_ins_msg);
 
 protected:
     // Header
-    std_msgs::Header getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData,
-                               const ixblue_stdbin_decoder::Data::BinaryNav& navData);
+    bool getHeader(const ixblue_stdbin_decoder::Data::NavHeader & headerData,
+                   const ixblue_stdbin_decoder::Data::BinaryNav & navData,
+                   std_msgs::msg::Header & header_msg);
 
     // Launch parameters
     std::string frame_id;
@@ -43,13 +45,13 @@ protected:
     std::string time_origin;
     bool use_compensated_acceleration;
 
-    ros::NodeHandle nh;
+    rclcpp::Node::SharedPtr node_;
 
     // Publishers
-    ros::Publisher stdImuPublisher;
-    ros::Publisher stdNavSatFixPublisher;
-    ros::Publisher stdTimeReferencePublisher;
-    ros::Publisher stdInsPublisher;
+    rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr stdImuPublisher;
+    rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr stdNavSatFixPublisher;
+    rclcpp::Publisher<sensor_msgs::msg::TimeReference>::SharedPtr stdTimeReferencePublisher;
+    rclcpp::Publisher<ixblue_ins_msgs::msg::Ins>::SharedPtr stdInsPublisher;
     DiagnosticsPublisher diagPub;
 
     // Utils
