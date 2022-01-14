@@ -31,25 +31,21 @@ find_package(Boost REQUIRED COMPONENTS system)
 ###########
 ## Build ##
 ###########
-add_library(${PROJECT_NAME}_driver
+include_directories(include)
+add_library(${PROJECT_NAME}
         SHARED
         src/ip_listener.cpp
-        src/ip_listener.h
         src/udp_listener.cpp
-        src/udp_listener.h
         src/ros_publisher.cpp
-        src/ros_publisher.h
         src/diagnostics_publisher.cpp
-        src/diagnostics_publisher.h
-        src/std_bin_data_handler_interface.hpp
         )
-target_include_directories(${PROJECT_NAME}_driver PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
         $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
         )
-target_link_libraries(${PROJECT_NAME}_driver ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
 ament_target_dependencies(
-        ${PROJECT_NAME}_driver
+        ${PROJECT_NAME}
         rclcpp
         nav_msgs
         std_msgs
@@ -57,6 +53,7 @@ ament_target_dependencies(
         ixblue_ins_msgs
         diagnostic_msgs
         diagnostic_updater
+        ixblue_stdbin_decoder
 )
 
 
@@ -77,7 +74,7 @@ set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX ""
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-target_link_libraries(${PROJECT_NAME}_node ${Boost_LIBRARIES} ${PROJECT_NAME}_driver ixblue_stdbin_decoder::ixblue_stdbin_decoder)
+target_link_libraries(${PROJECT_NAME}_node ${Boost_LIBRARIES} ${PROJECT_NAME} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
 ament_target_dependencies(
         ${PROJECT_NAME}_node
         rclcpp
@@ -88,8 +85,15 @@ ament_target_dependencies(
 #############
 
 ## Mark executables and/or libraries for installation
+install(DIRECTORY include/
+        DESTINATION include)
 install(TARGETS ${PROJECT_NAME}_node
         DESTINATION lib/${PROJECT_NAME}
+        )
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION bin
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
         )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
@@ -134,4 +138,20 @@ endif ()
 ###########################
 ## declare ament package ##
 ###########################
-ament_package()
+ament_export_include_directories(
+        include
+)
+ament_export_libraries(
+        ${PROJECT_NAME}
+)
+ament_export_dependencies(
+        ixblue_stdbin_decoder
+#        nav_msgs
+#        std_msgs
+#        sensor_msgs
+        ixblue_ins_msgs
+#        diagnostic_msgs
+#        diagnostic_updater
+)
+
+ament_package(CONFIG_EXTRAS "cmake/ConfigExtras.cmake")

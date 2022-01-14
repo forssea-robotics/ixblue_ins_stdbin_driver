@@ -1,17 +1,18 @@
-#include "udp_listener.h"
+#include <ixblue_ins_driver/udp_listener.h>
 #include <boost/bind.hpp>
+
+#include <rclcpp/logging.hpp>
 
 using namespace boost::asio;
 
 UDPListener::UDPListener(const std::string & ip,
                          uint16_t port,
-                         const rclcpp::Node::SharedPtr & node,
                          StdBinDataHandlerInterface * data_handler)
-    : IPListener(ip, port, node, data_handler),
+    : IPListener(ip, port, data_handler),
       socket(service, ip::udp::endpoint(ip::address::from_string(ip), port))
 {
     listenNextData();
-    RCLCPP_DEBUG_STREAM(node->get_logger(), "Starting asio thread");
+    RCLCPP_DEBUG_STREAM(rclcpp::get_logger("udp_listener"), "Starting asio thread");
     asioThread = std::thread([&]() { service.run(); });
 }
 

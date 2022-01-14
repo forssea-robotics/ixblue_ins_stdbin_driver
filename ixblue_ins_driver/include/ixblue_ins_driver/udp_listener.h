@@ -9,7 +9,6 @@ class UDPListener : public IPListener
 public:
     UDPListener(const std::string & ip,
                 uint16_t port,
-                const rclcpp::Node::SharedPtr & node,
                 StdBinDataHandlerInterface * data_handler);
 
 protected:

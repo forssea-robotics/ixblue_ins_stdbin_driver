@@ -9,7 +9,6 @@
 #include <ixblue_stdbin_decoder/stdbin_decoder.h>
 #include <string>
 #include <thread>
-#include <rclcpp/rclcpp.hpp>
 
 /*!
  * \brief Contains the common part of TCP and UDP Receiver.
@@ -27,7 +26,6 @@ class IPListener : private boost::noncopyable
 public:
     IPListener(std::string  ip,
                uint16_t port,
-               rclcpp::Node::SharedPtr node,
                StdBinDataHandlerInterface * _data_handler);
     virtual ~IPListener();
 
@@ -48,6 +46,5 @@ protected:
     boost::array<uint8_t, 8192> datas{};
     boost::asio::io_service service;
     std::thread asioThread;
-    rclcpp::Node::SharedPtr node;
     StdBinDataHandlerInterface* data_handler;
 };

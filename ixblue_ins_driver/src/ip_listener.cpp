@@ -1,14 +1,14 @@
-#include "ip_listener.h"
+#include <ixblue_ins_driver/ip_listener.h>
 
 #include <utility>
+#include <rclcpp/logging.hpp>
 
 using namespace boost::asio;
 
 IPListener::IPListener(std::string ip,
                        uint16_t port,
-                       rclcpp::Node::SharedPtr node,
                        StdBinDataHandlerInterface * _data_handler)
-  : ip(std::move(ip)), port(port), node(std::move(node)), data_handler(_data_handler)
+  : ip(std::move(ip)), port(port), data_handler(_data_handler)
 {}
 
 IPListener::~IPListener()
@@ -31,7 +31,7 @@ void IPListener::onNewDataReceived(const boost::system::error_code& error,
         // We don't publish a diagnostics here, they will be handled in an higher level.
         // If there is an error, there is no parse, so diagnostic updater will detect it.
         RCLCPP_WARN_STREAM(
-          node->get_logger(), "Error occurs in IP Listener : " << error.message());
+          rclcpp::get_logger("ip_listener"), "Error occurs in IP Listener : " << error.message());
     } else {
         RCLCPP_DEBUG_STREAM(rclcpp::get_logger("ip_listener"), "Received StdBin data");
         // No errors, we can parse it :
@@ -46,7 +46,7 @@ void IPListener::onNewDataReceived(const boost::system::error_code& error,
         }
         catch(const std::runtime_error& e)
         {
-            RCLCPP_WARN_STREAM(node->get_logger(), "Parse error : " << e.what());
+            RCLCPP_WARN_STREAM(rclcpp::get_logger("ip_listener"), "Parse error : " << e.what());
             // TODO : Publish a diagnostic
         }
     }

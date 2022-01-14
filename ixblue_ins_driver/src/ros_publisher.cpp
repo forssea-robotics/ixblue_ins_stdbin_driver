@@ -4,7 +4,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "ros_publisher.h"
+#include <ixblue_ins_driver/ros_publisher.h>
 
 
 ROSPublisher::ROSPublisher(rclcpp::Node::SharedPtr node) : node_(node), diagPub(node_)

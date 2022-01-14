@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../src/ros_publisher.h"
+#include "../include/ixblue_ins_driver/ros_publisher.h"
 
 TEST(ROSPublisherTester, CanFillANavSatFixMsg)
 {

@@ -1,4 +1,4 @@
-#include "diagnostics_publisher.h"
+#include <ixblue_ins_driver/diagnostics_publisher.h>
 #include <rclcpp/time.hpp>
 #include <memory>
 #include <bitset>
