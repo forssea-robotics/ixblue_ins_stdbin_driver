@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ros_publisher.h"
+#include "std_bin_data_handler_interface.hpp"
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/noncopyable.hpp>
@@ -9,6 +9,7 @@
 #include <ixblue_stdbin_decoder/stdbin_decoder.h>
 #include <string>
 #include <thread>
+#include <rclcpp/rclcpp.hpp>
 
 /*!
  * \brief Contains the common part of TCP and UDP Receiver.
@@ -24,7 +25,10 @@ class IPListener : private boost::noncopyable
     IPListener() = delete;
 
 public:
-    IPListener(const std::string& ip, uint16_t port, const rclcpp::Node::SharedPtr& node);
+    IPListener(std::string  ip,
+               uint16_t port,
+               rclcpp::Node::SharedPtr node,
+               StdBinDataHandlerInterface * _data_handler);
     virtual ~IPListener();
 
     void onNewDataReceived(const boost::system::error_code& error,
@@ -41,8 +45,9 @@ protected:
 
     ixblue_stdbin_decoder::StdBinDecoder parser;
 
-    boost::array<uint8_t, 8192> datas;
+    boost::array<uint8_t, 8192> datas{};
     boost::asio::io_service service;
     std::thread asioThread;
-    ROSPublisher rosPublisher;
+    rclcpp::Node::SharedPtr node;
+    StdBinDataHandlerInterface* data_handler;
 };

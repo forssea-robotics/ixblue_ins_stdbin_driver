@@ -3,8 +3,11 @@
 
 using namespace boost::asio;
 
-UDPListener::UDPListener(const std::string& ip, uint16_t port, const rclcpp::Node::SharedPtr& node)
-    : IPListener(ip, port, node),
+UDPListener::UDPListener(const std::string & ip,
+                         uint16_t port,
+                         const rclcpp::Node::SharedPtr & node,
+                         StdBinDataHandlerInterface * data_handler)
+    : IPListener(ip, port, node, data_handler),
       socket(service, ip::udp::endpoint(ip::address::from_string(ip), port))
 {
     listenNextData();

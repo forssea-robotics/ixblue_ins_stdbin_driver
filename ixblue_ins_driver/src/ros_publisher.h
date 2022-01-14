@@ -10,13 +10,14 @@
 #include <sensor_msgs/msg/time_reference.hpp>
 
 #include "diagnostics_publisher.h"
+#include "std_bin_data_handler_interface.hpp"
 
-class ROSPublisher
+class ROSPublisher : public StdBinDataHandlerInterface
 {
 public:
     explicit ROSPublisher(rclcpp::Node::SharedPtr node);
     void onNewStdBinData(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
-                         const ixblue_stdbin_decoder::Data::NavHeader& headerData);
+                         const ixblue_stdbin_decoder::Data::NavHeader& headerData) override;
 
     // Standard ros msgs
     static bool toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav & navData,

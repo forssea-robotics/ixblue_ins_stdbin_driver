@@ -1,4 +1,5 @@
 #include "udp_listener.h"
+#include "ros_publisher.h"
 #include <rclcpp/rclcpp.hpp>
 
 int main(int argc, char ** argv)
@@ -23,7 +24,8 @@ int main(int argc, char ** argv)
     return -1;
   }
 
-  UDPListener udp_listener(ip, static_cast<uint16_t>(udp_port), n);
+  auto ros_publisher_ptr = std::make_unique<ROSPublisher>(n);
+  UDPListener udp_listener(ip, static_cast<uint16_t>(udp_port), n, ros_publisher_ptr.get());
 
 
   rclcpp::spin(n);
