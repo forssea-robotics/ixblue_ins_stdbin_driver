@@ -109,11 +109,11 @@ void ROSPublisher::onNewStdBinData(
     if(toiXInsMsg(navData, iXinsMsg))
     {
         iXinsMsg.header = headerMsg;
-        //stdInsPublisher->publish(iXinsMsg);
+        stdInsPublisher->publish(iXinsMsg);
     }
 }
 
-bool ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader & headerData,
+void ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader & headerData,
                              const ixblue_stdbin_decoder::Data::BinaryNav & navData,
                              std_msgs::msg::Header & res)
 {
@@ -155,8 +155,6 @@ bool ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader & head
     {
         res.stamp = node_->get_clock()->now();
     }
-
-    return true;
 }
 
 bool ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav & navData,
@@ -370,7 +368,6 @@ bool ROSPublisher::toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav & nav
     res.longitude = navData.position.get().longitude_deg;
     res.altitude_ref = navData.position.get().altitude_ref;
     res.altitude = navData.position.get().altitude_m;
-    res.depth = navData.depth.get().depth_m;
 
     // --- Position SD
     if(!navData.positionDeviation.is_initialized())

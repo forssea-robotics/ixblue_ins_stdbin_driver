@@ -36,9 +36,9 @@ public:
 
 protected:
     // Header
-    bool getHeader(const ixblue_stdbin_decoder::Data::NavHeader & headerData,
+    void getHeader(const ixblue_stdbin_decoder::Data::NavHeader & headerData,
                    const ixblue_stdbin_decoder::Data::BinaryNav & navData,
-                   std_msgs::msg::Header & header_msg);
+                   std_msgs::msg::Header & res);
 
     // Launch parameters
     std::string frame_id;
