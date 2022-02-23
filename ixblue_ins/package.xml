@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<package format="2">
+<package format="3">
   <name>ixblue_ins</name>
-  <version>0.1.5</version>
+  <version>0.2.0</version>
   <description>Metapackage for iXblue INS driver</description>
 
   <maintainer email="adrien.barral@ixblue.com">Adrien BARRAL</maintainer>
   <maintainer email="romain.reignier@ixblue.com">Romain REIGNIER</maintainer>
+  <maintainer email="alaa@forssea-robotics.fr">Alaa EL JAWAD</maintainer>
 
   <license>MIT</license>
 
@@ -13,13 +14,14 @@
 
   <author email="adrien.barral@ixblue.com">Adrien BARRAL</author>
   <author email="laure.le-breton@ixblue.com">Laure LE BRETON</author>
+  <author email="alaa@forssea-robotics.fr">Alaa EL JAWAD</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <exec_depend>ixblue_ins_msgs</exec_depend>
   <exec_depend>ixblue_ins_driver</exec_depend>
 
   <export>
-    <metapackage/>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>

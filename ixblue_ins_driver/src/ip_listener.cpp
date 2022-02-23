@@ -1,9 +1,15 @@
-#include "ip_listener.h"
-#include <ros/console.h>
+#include <ixblue_ins_driver/ip_listener.h>
+
+#include <utility>
+#include <rclcpp/logging.hpp>
 
 using namespace boost::asio;
 
-IPListener::IPListener(const std::string& ip, uint16_t port) : ip(ip), port(port) {}
+IPListener::IPListener(std::string ip,
+                       uint16_t port,
+                       StdBinDataHandlerInterface * _data_handler)
+  : ip(std::move(ip)), port(port), data_handler(_data_handler)
+{}
 
 IPListener::~IPListener()
 {
@@ -24,25 +30,23 @@ void IPListener::onNewDataReceived(const boost::system::error_code& error,
     {
         // We don't publish a diagnostics here, they will be handled in an higher level.
         // If there is an error, there is no parse, so diagnostic updater will detect it.
-        ROS_WARN_STREAM("Error occurs in IP Listener : " << error.message());
-    }
-    else
-    {
-        ROS_DEBUG_STREAM("Received StdBin data");
+        RCLCPP_WARN_STREAM(
+          rclcpp::get_logger("ip_listener"), "Error occurs in IP Listener : " << error.message());
+    } else {
+        RCLCPP_DEBUG_STREAM(rclcpp::get_logger("ip_listener"), "Received StdBin data");
         // No errors, we can parse it :
-        try
-        {
+        try {
             parser.addNewData(datas.data(), bytes_transfered);
             while(parser.parseNextFrame())
             {
                 auto navData = parser.getLastNavData();
                 auto headerData = parser.getLastHeaderData();
-                rosPublisher.onNewStdBinData(navData, headerData);
+                data_handler->onNewStdBinData(navData, headerData);
             }
         }
         catch(const std::runtime_error& e)
         {
-            ROS_WARN_STREAM("Parse error : " << e.what());
+            RCLCPP_WARN_STREAM(rclcpp::get_logger("ip_listener"), "Parse error : " << e.what());
             // TODO : Publish a diagnostic
         }
     }
