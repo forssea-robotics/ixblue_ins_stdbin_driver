@@ -13,7 +13,7 @@
 class DiagnosticsPublisher
 {
 public:
-    DiagnosticsPublisher(rclcpp::Node::SharedPtr & n);
+    DiagnosticsPublisher(rclcpp::Node::SharedPtr n);
     void setHardwareID(const std::string& hwId);
     void stdImuTick(const rclcpp::Time& stamp);
     void updateStatus(

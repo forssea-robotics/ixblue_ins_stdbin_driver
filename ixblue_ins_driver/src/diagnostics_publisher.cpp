@@ -3,7 +3,7 @@
 #include <memory>
 #include <bitset>
 
-DiagnosticsPublisher::DiagnosticsPublisher(rclcpp::Node::SharedPtr & n)
+DiagnosticsPublisher::DiagnosticsPublisher(rclcpp::Node::SharedPtr n)
 : diagnosticsUpdater(n, 1.0), node(n), steady_clock(RCL_STEADY_TIME)
 {
     n->declare_parameter<double>("expected_frequency", 10.0);

@@ -146,12 +146,7 @@ ament_export_libraries(
 )
 ament_export_dependencies(
         ixblue_stdbin_decoder
-#        nav_msgs
-#        std_msgs
-#        sensor_msgs
         ixblue_ins_msgs
-#        diagnostic_msgs
-#        diagnostic_updater
 )
 
 ament_package(CONFIG_EXTRAS "cmake/ConfigExtras.cmake")
