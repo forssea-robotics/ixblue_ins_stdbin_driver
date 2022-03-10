@@ -48,6 +48,7 @@ void IPListener::onNewDataReceived(const boost::system::error_code& error,
         {
             RCLCPP_WARN_STREAM(rclcpp::get_logger("ip_listener"), "Parse error : " << e.what());
             // TODO : Publish a diagnostic
+            parser.clearData();
         }
     }
     listenNextData();
