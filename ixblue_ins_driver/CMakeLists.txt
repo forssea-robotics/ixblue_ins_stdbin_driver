@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(ixblue_ins_driver)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++17)
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 find_package(rclcpp REQUIRED)
 find_package(nav_msgs REQUIRED)
@@ -131,6 +131,7 @@ if (BUILD_TESTING)
                 ixblue_ins_msgs
                 sensor_msgs
                 diagnostic_msgs
+                diagnostic_updater
                 )
     endif ()
 endif ()
