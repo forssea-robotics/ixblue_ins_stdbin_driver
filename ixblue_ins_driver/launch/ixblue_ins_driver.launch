@@ -11,15 +11,15 @@
 	<arg name="connection_lost_timeout" default="10.0"/>
 	<arg name="use_compensated_acceleration" default="false"/>
 
-	<node pkg="ixblue_ins_driver" type="node" name="ixblue_ins_driver" output="screen">
-		<param name="frame_id" value="$(arg frame_id)"/>
-		<param name="udp_port" value="$(arg udp_port)"/>
-		<param name="ip" value="$(arg ip)"/>
-		<param name="time_source" value="$(arg time_source)"/>
-		<param name="time_origin" value="$(arg time_origin)"/>
-		<param name="expected_frequency" value="$(arg expected_frequency)"/>
-		<param name="max_latency" value="$(arg max_latency)"/>
-		<param name="connection_lost_timeout" value="$(arg connection_lost_timeout)"/>
-		<param name="use_compensated_acceleration" value="$(arg use_compensated_acceleration)"/>
+	<node pkg="ixblue_ins_driver" exec="node" name="ixblue_ins_driver" output="screen">
+		<param name="frame_id" value="$(var frame_id)"/>
+		<param name="udp_port" value="$(var udp_port)"/>
+		<param name="ip" value="$(var ip)"/>
+		<param name="time_source" value="$(var time_source)"/>
+		<param name="time_origin" value="$(var time_origin)"/>
+		<param name="expected_frequency" value="$(var expected_frequency)"/>
+		<param name="max_latency" value="$(var max_latency)"/>
+		<param name="connection_lost_timeout" value="$(var connection_lost_timeout)"/>
+		<param name="use_compensated_acceleration" value="$(var use_compensated_acceleration)"/>
 	</node>
 </launch>
