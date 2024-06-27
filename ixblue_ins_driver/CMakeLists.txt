@@ -8,6 +8,7 @@ find_package(rclcpp REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(ixblue_ins_msgs REQUIRED)
 find_package(diagnostic_msgs REQUIRED)
 find_package(diagnostic_updater REQUIRED)
@@ -56,6 +57,24 @@ ament_target_dependencies(
         ixblue_stdbin_decoder
 )
 
+add_library(${PROJECT_NAME}_publisher
+        SHARED
+        src/ip_publisher.cpp
+        src/udp_publisher.cpp
+        src/ros_subscriber.cpp
+        )
+target_include_directories(${PROJECT_NAME}_publisher PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
+        $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
+        )
+target_link_libraries(${PROJECT_NAME}_publisher ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
+ament_target_dependencies(
+        ${PROJECT_NAME}_publisher
+        rclcpp
+        geometry_msgs
+        ixblue_stdbin_decoder
+)
+
 
 add_executable(
         ${PROJECT_NAME}_node
@@ -80,6 +99,30 @@ ament_target_dependencies(
         rclcpp
 )
 
+
+add_executable(
+        ${PROJECT_NAME}_publisher_node
+        src/main_publisher.cpp
+)
+target_include_directories(${PROJECT_NAME}_publisher_node PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
+        $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
+        )
+
+## Rename C++ executable without prefix
+## The above recommended prefix causes long target names, the following renames the
+## target back to the shorter version for ease of user use
+## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
+set_target_properties(${PROJECT_NAME}_publisher_node PROPERTIES OUTPUT_NAME node PREFIX "")
+
+## Add cmake target dependencies of the executable
+## same as for the library above
+target_link_libraries(${PROJECT_NAME}_publisher_node ${Boost_LIBRARIES} ${PROJECT_NAME}_publisher ixblue_stdbin_decoder::ixblue_stdbin_decoder)
+ament_target_dependencies(
+        ${PROJECT_NAME}_publisher_node
+        rclcpp
+)
+
 #############
 ## Install ##
 #############
@@ -87,7 +130,7 @@ ament_target_dependencies(
 ## Mark executables and/or libraries for installation
 install(DIRECTORY include/
         DESTINATION include)
-install(TARGETS ${PROJECT_NAME}_node
+install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_publisher_node
         DESTINATION lib/${PROJECT_NAME}
         )
 install(TARGETS ${PROJECT_NAME}
