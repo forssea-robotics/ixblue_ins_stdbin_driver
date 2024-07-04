@@ -113,7 +113,7 @@ target_include_directories(${PROJECT_NAME}_publisher_node PUBLIC
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-set_target_properties(${PROJECT_NAME}_publisher_node PROPERTIES OUTPUT_NAME node PREFIX "")
+set_target_properties(${PROJECT_NAME}_publisher_node PROPERTIES OUTPUT_NAME publisher_node PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -133,7 +133,7 @@ install(DIRECTORY include/
 install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_publisher_node
         DESTINATION lib/${PROJECT_NAME}
         )
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_publisher
         RUNTIME DESTINATION bin
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
@@ -186,7 +186,7 @@ ament_export_include_directories(
         include
 )
 ament_export_libraries(
-        ${PROJECT_NAME}
+        ${PROJECT_NAME} ${PROJECT_NAME}_publisher
 )
 ament_export_dependencies(
         ixblue_stdbin_decoder

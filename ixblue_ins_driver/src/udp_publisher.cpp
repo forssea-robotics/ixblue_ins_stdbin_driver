@@ -8,8 +8,10 @@ using namespace boost::asio;
 UDPPublisher::UDPPublisher(const std::string & ip,
                          uint16_t port)
     : IPPublisher(ip, port),
-      socket(service, ip::udp::endpoint(ip::address::from_string(ip), port))
+      endpoint(ip::address::from_string(ip), port),
+      socket(service)
 {
+    socket.open(ip::udp::v4());
     RCLCPP_DEBUG_STREAM(rclcpp::get_logger("udp_publisher"), "Starting asio thread");
     asioThread = std::thread([&]() { service.run(); });
 }
@@ -18,6 +20,7 @@ void UDPPublisher::sendNextData(const ixblue_stdbin_decoder::Data::BinaryNav& bi
 {
     std::vector<uint8_t> data;
     try {
+        RCLCPP_DEBUG(rclcpp::get_logger("udp_publisher"), "Serializing data");
         data = encoder.serialize(binaryNav, time_100us);
     } catch(std::runtime_error& e){
         // Serialization errors are reported by throwing std::runtime_exception.

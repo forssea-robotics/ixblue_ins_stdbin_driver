@@ -1,5 +1,6 @@
 #include <ixblue_ins_driver/ip_publisher.h>
 
+#include <ixblue_stdbin_decoder/stdbin_encoder.h>
 #include <utility>
 #include <rclcpp/logging.hpp>
 
@@ -7,7 +8,7 @@ using namespace boost::asio;
 
 IPPublisher::IPPublisher(std::string ip,
                        uint16_t port)
-  : ip(std::move(ip)), port(port)
+  : ip(std::move(ip)), port(port), encoder(ixblue_stdbin_decoder::StdBinEncoder::ProtocolVersion::V3, ixblue_stdbin_decoder::StdBinEncoder::DataMode::INPUT)
 {}
 
 IPPublisher::~IPPublisher()
