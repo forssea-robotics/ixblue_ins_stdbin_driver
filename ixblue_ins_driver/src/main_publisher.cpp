@@ -17,6 +17,7 @@ int main(int argc, char ** argv)
   n->declare_parameter<std::string>("connection_type", std::string("udp"));
   n->get_parameter("port", port);
   n->get_parameter("ip", ip);
+  n->get_parameter("connection_type", connection_type);
 
   RCLCPP_INFO(n->get_logger(), "Port : %d", port);
   RCLCPP_INFO(n->get_logger(), "IP address : %s", ip.c_str());
