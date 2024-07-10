@@ -61,6 +61,7 @@ add_library(${PROJECT_NAME}_publisher
         SHARED
         src/ip_publisher.cpp
         src/udp_publisher.cpp
+        src/tcp_client_publisher.cpp
         src/ros_subscriber.cpp
         )
 target_include_directories(${PROJECT_NAME}_publisher PUBLIC
