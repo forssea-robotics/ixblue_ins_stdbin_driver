@@ -22,6 +22,7 @@ void UDPPublisher::sendNextData(const ixblue_stdbin_decoder::Data::BinaryNav& bi
     try {
         RCLCPP_DEBUG(rclcpp::get_logger("udp_publisher"), "Serializing data");
         data = encoder.serialize(binaryNav, time_100us);
+        RCLCPP_DEBUG_STREAM(rclcpp::get_logger("udp_publisher"), "Data : " << std::hex << static_cast<int>(data[0]));
     } catch(std::runtime_error& e){
         // Serialization errors are reported by throwing std::runtime_exception.
         RCLCPP_ERROR_STREAM(rclcpp::get_logger("udp_publisher"), "Serialization error : " << e.what());
