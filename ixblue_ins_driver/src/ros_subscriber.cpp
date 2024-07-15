@@ -5,6 +5,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <ixblue_ins_driver/ros_subscriber.h>
+#include <ixblue_stdbin_decoder/data_models/external_data/dvl_ground_speed.h>
 
 
 ROSSubscriber::ROSSubscriber(rclcpp::Node::SharedPtr node, IPPublisher* publisher) : node_(node), publisher_(publisher)
@@ -18,6 +19,8 @@ void ROSSubscriber::onNewTwistReceived(const geometry_msgs::msg::TwistWithCovari
 {
     RCLCPP_DEBUG_STREAM(node_->get_logger(), "Received twist message");
     ixblue_stdbin_decoder::Data::BinaryNav binaryNav;
+
+    binaryNav.dvlGroundSpeed2 = ixblue_stdbin_decoder::Data::DvlGroundSpeed();
 
     binaryNav.dvlGroundSpeed2->dvl_id = 2;
     binaryNav.dvlGroundSpeed2->validityTime_100us = msg->header.stamp.sec * 10000 + msg->header.stamp.nanosec / 100000;
