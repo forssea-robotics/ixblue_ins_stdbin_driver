@@ -30,13 +30,12 @@ void TCPClientPublisher::sendNextData(const ixblue_stdbin_decoder::Data::BinaryN
             ss << std::hex << static_cast<int>(d) << " ";
         }
         RCLCPP_DEBUG_STREAM(rclcpp::get_logger("tcp_publisher"), "Data to send : " << ss.str());
+        socket.async_send(boost::asio::buffer(data),
+                            boost::bind(&IPPublisher::handler, this,
+                                        boost::asio::placeholders::error,
+                                        boost::asio::placeholders::bytes_transferred));
     } catch(std::runtime_error& e){
         // Serialization errors are reported by throwing std::runtime_exception.
         RCLCPP_ERROR_STREAM(rclcpp::get_logger("tcp_publisher"), "Serialization error : " << e.what());
     }
-    std::copy(data.begin(), data.end(), datas.begin());
-    socket.async_send(boost::asio::buffer(datas),
-                          boost::bind(&IPPublisher::handler, this,
-                                      boost::asio::placeholders::error,
-                                      boost::asio::placeholders::bytes_transferred));
 }

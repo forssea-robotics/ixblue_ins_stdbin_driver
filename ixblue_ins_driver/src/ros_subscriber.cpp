@@ -22,8 +22,9 @@ void ROSSubscriber::onNewTwistReceived(const geometry_msgs::msg::TwistWithCovari
 
     binaryNav.dvlGroundSpeed2 = ixblue_stdbin_decoder::Data::DvlGroundSpeed();
 
-    binaryNav.dvlGroundSpeed2->dvl_id = 2;
-    binaryNav.dvlGroundSpeed2->validityTime_100us = msg->header.stamp.sec * 10000 + msg->header.stamp.nanosec / 100000;
+    binaryNav.dvlGroundSpeed2->dvl_id = 1;
+    // get number of 100us since 0h current date
+    binaryNav.dvlGroundSpeed2->validityTime_100us = (rclcpp::Time(msg->header.stamp).nanoseconds() % 86400000000000) / 100000;
     binaryNav.dvlGroundSpeed2->dvl_speedofsound_ms = 1500.;
     binaryNav.dvlGroundSpeed2->xv1_groundspeed_ms = msg->twist.twist.linear.x;
     binaryNav.dvlGroundSpeed2->xv2_groundspeed_ms = msg->twist.twist.linear.y;
@@ -33,6 +34,6 @@ void ROSSubscriber::onNewTwistReceived(const geometry_msgs::msg::TwistWithCovari
     binaryNav.dvlGroundSpeed2->xv3_stddev_ms = msg->twist.covariance[14];
 
     // --- Send data
-    publisher_->sendNextData(binaryNav, msg->header.stamp.sec * 10000 + msg->header.stamp.nanosec / 100000);
+    publisher_->sendNextData(binaryNav, 0);
     RCLCPP_DEBUG_STREAM(node_->get_logger(), "Sent message over udp");
 }
