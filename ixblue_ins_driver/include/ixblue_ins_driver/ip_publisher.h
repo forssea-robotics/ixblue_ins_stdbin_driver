@@ -36,7 +36,6 @@ protected:
 
     ixblue_stdbin_decoder::StdBinEncoder encoder;
 
-    boost::array<uint8_t, 8192> datas{};
     boost::asio::io_service service;
     std::thread asioThread;
 };
