@@ -7,6 +7,7 @@
   <maintainer email="laure.le-breton@ixblue.com">Laure LE BRETON</maintainer>
   <maintainer email="romain.reignier@ixblue.com">Romain REIGNIER</maintainer>
   <maintainer email="alaa@forssea-robotics.fr">Alaa EL JAWAD</maintainer>
+  <maintainer email="auguste@forssea-robotics.fr">Auguste BOURGOIS</maintainer>
 
   <license>MIT</license>
 
@@ -15,6 +16,7 @@
   <author email="adrien.barral@ixblue.com">Adrien BARRAL</author>
   <author email="laure.le-breton@ixblue.com">Laure LE BRETON</author>
   <author email="alaa@forssea-robotics.fr">Alaa EL JAWAD</author>
+  <author email="auguste@forssea-robotics.fr">Auguste BOURGOIS</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

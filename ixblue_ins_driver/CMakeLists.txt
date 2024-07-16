@@ -33,20 +33,20 @@ find_package(Boost REQUIRED COMPONENTS system)
 ## Build ##
 ###########
 include_directories(include)
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME}_output
         SHARED
         src/ip_listener.cpp
         src/udp_listener.cpp
         src/ros_publisher.cpp
         src/diagnostics_publisher.cpp
         )
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(${PROJECT_NAME}_output PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
         $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
         )
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
+target_link_libraries(${PROJECT_NAME}_output ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
 ament_target_dependencies(
-        ${PROJECT_NAME}
+        ${PROJECT_NAME}_output
         rclcpp
         nav_msgs
         std_msgs
@@ -57,20 +57,20 @@ ament_target_dependencies(
         ixblue_stdbin_decoder
 )
 
-add_library(${PROJECT_NAME}_publisher
+add_library(${PROJECT_NAME}_input
         SHARED
         src/ip_publisher.cpp
         src/udp_publisher.cpp
         src/tcp_client_publisher.cpp
         src/ros_subscriber.cpp
         )
-target_include_directories(${PROJECT_NAME}_publisher PUBLIC
+target_include_directories(${PROJECT_NAME}_input PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
         $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
         )
-target_link_libraries(${PROJECT_NAME}_publisher ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
+target_link_libraries(${PROJECT_NAME}_input ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
 ament_target_dependencies(
-        ${PROJECT_NAME}_publisher
+        ${PROJECT_NAME}_input
         rclcpp
         geometry_msgs
         ixblue_stdbin_decoder
@@ -78,10 +78,10 @@ ament_target_dependencies(
 
 
 add_executable(
-        ${PROJECT_NAME}_node
-        src/main.cpp
+        ${PROJECT_NAME}_output_node
+        src/main_output.cpp
 )
-target_include_directories(${PROJECT_NAME}_node PUBLIC
+target_include_directories(${PROJECT_NAME}_output_node PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
         $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
         )
@@ -90,22 +90,22 @@ target_include_directories(${PROJECT_NAME}_node PUBLIC
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
+set_target_properties(${PROJECT_NAME}_output_node PROPERTIES OUTPUT_NAME output_node PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-target_link_libraries(${PROJECT_NAME}_node ${Boost_LIBRARIES} ${PROJECT_NAME} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
+target_link_libraries(${PROJECT_NAME}_output_node ${Boost_LIBRARIES} ${PROJECT_NAME}_output ixblue_stdbin_decoder::ixblue_stdbin_decoder)
 ament_target_dependencies(
-        ${PROJECT_NAME}_node
+        ${PROJECT_NAME}_output_node
         rclcpp
 )
 
 
 add_executable(
-        ${PROJECT_NAME}_publisher_node
-        src/main_publisher.cpp
+        ${PROJECT_NAME}_input_node
+        src/main_input.cpp
 )
-target_include_directories(${PROJECT_NAME}_publisher_node PUBLIC
+target_include_directories(${PROJECT_NAME}_input_node PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
         $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
         )
@@ -114,13 +114,13 @@ target_include_directories(${PROJECT_NAME}_publisher_node PUBLIC
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-set_target_properties(${PROJECT_NAME}_publisher_node PROPERTIES OUTPUT_NAME publisher_node PREFIX "")
+set_target_properties(${PROJECT_NAME}_input_node PROPERTIES OUTPUT_NAME input_node PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-target_link_libraries(${PROJECT_NAME}_publisher_node ${Boost_LIBRARIES} ${PROJECT_NAME}_publisher ixblue_stdbin_decoder::ixblue_stdbin_decoder)
+target_link_libraries(${PROJECT_NAME}_input_node ${Boost_LIBRARIES} ${PROJECT_NAME}_input ixblue_stdbin_decoder::ixblue_stdbin_decoder)
 ament_target_dependencies(
-        ${PROJECT_NAME}_publisher_node
+        ${PROJECT_NAME}_input_node
         rclcpp
 )
 
@@ -131,10 +131,10 @@ ament_target_dependencies(
 ## Mark executables and/or libraries for installation
 install(DIRECTORY include/
         DESTINATION include)
-install(TARGETS ${PROJECT_NAME}_node ${PROJECT_NAME}_publisher_node
+install(TARGETS ${PROJECT_NAME}_output_node ${PROJECT_NAME}_input_node
         DESTINATION lib/${PROJECT_NAME}
         )
-install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_publisher
+install(TARGETS ${PROJECT_NAME}_output ${PROJECT_NAME}_input
         RUNTIME DESTINATION bin
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
@@ -187,7 +187,7 @@ ament_export_include_directories(
         include
 )
 ament_export_libraries(
-        ${PROJECT_NAME} ${PROJECT_NAME}_publisher
+        ${PROJECT_NAME}_input ${PROJECT_NAME}_output
 )
 ament_export_dependencies(
         ixblue_stdbin_decoder
