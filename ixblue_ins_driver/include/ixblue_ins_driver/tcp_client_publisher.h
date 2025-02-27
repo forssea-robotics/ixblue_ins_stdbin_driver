@@ -11,6 +11,8 @@ class TCPClientPublisher : public IPPublisher
 public:
     TCPClientPublisher(std::string ip, uint16_t port);
 
+    bool isConnected() const { return socket.is_open(); }
+
     void sendNextData(const ixblue_stdbin_decoder::Data::BinaryNav& binaryNav, uint32_t time_100us);
 
 protected:

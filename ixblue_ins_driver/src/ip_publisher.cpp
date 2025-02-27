@@ -13,8 +13,8 @@ IPPublisher::IPPublisher(std::string ip,
 
 IPPublisher::~IPPublisher()
 {
-    service.stop();
-    asioThread.join();
+    if (asioThread.joinable())
+        asioThread.join();
 }
 
 void IPPublisher::handler(

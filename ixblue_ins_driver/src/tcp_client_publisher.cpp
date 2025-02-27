@@ -15,6 +15,7 @@ TCPClientPublisher::TCPClientPublisher(std::string ip, uint16_t port)
         connect(socket, resolver.resolve({ip, std::to_string(port)}));
     } catch (boost::system::system_error& e) {
         RCLCPP_ERROR_STREAM(rclcpp::get_logger("publisher"), "Error while connecting to " << ip << ":" << port << " : " << e.what());
+        socket.close();
     }
 }
 

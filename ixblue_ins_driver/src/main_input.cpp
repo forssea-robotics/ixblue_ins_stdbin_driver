@@ -36,8 +36,10 @@ int main(int argc, char ** argv)
     rclcpp::spin(n);
   } else if (connection_type == "tcp_client") {
     auto tcp_client_publisher = std::make_unique<TCPClientPublisher>(ip, static_cast<uint16_t>(port));
-    ROSSubscriber ros_subscriber(n, tcp_client_publisher.get());
-    rclcpp::spin(n);
+    if (tcp_client_publisher->isConnected()){
+      ROSSubscriber ros_subscriber(n, tcp_client_publisher.get());
+      rclcpp::spin(n);
+    }
   } else {
     RCLCPP_ERROR_STREAM(n->get_logger(), "Unknown connection type : " << connection_type);
     return -1;
