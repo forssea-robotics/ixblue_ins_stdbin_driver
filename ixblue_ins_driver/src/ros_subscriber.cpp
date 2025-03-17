@@ -29,9 +29,9 @@ void ROSSubscriber::onNewTwistReceived(const geometry_msgs::msg::TwistWithCovari
     binaryNav.dvlGroundSpeed2->xv1_groundspeed_ms = msg->twist.twist.linear.x;
     binaryNav.dvlGroundSpeed2->xv2_groundspeed_ms = msg->twist.twist.linear.y;
     binaryNav.dvlGroundSpeed2->xv3_groundspeed_ms = msg->twist.twist.linear.z;
-    binaryNav.dvlGroundSpeed2->xv1_stddev_ms = msg->twist.covariance[0];
-    binaryNav.dvlGroundSpeed2->xv2_stddev_ms = msg->twist.covariance[7];
-    binaryNav.dvlGroundSpeed2->xv3_stddev_ms = msg->twist.covariance[14];
+    binaryNav.dvlGroundSpeed2->xv1_stddev_ms = sqrt(msg->twist.covariance[0]);
+    binaryNav.dvlGroundSpeed2->xv2_stddev_ms = sqrt(msg->twist.covariance[7]);
+    binaryNav.dvlGroundSpeed2->xv3_stddev_ms = sqrt(msg->twist.covariance[14]);
 
     // --- Send data
     publisher_->sendNextData(binaryNav, 0);
