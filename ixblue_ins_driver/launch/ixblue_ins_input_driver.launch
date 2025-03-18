@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+	<arg name="frame_id" default="imu_link_ned"/>
+	<arg name="port" default="8200"/>
+	<arg name="ip" default="0.0.0.0"/>
+	<arg name="connection_type" default="tcp_client"/>
+
+	<node pkg="ixblue_ins_driver" exec="input_node" name="ixblue_ins_driver" output="screen">
+		<param name="frame_id" value="$(var frame_id)"/>
+		<param name="port" value="$(var port)"/>
+		<param name="ip" value="$(var ip)"/>
+		<param name="connection_type" value="$(var connection_type)"/>
+	</node>
+</launch>
