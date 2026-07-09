@@ -9,6 +9,7 @@
 
 #include <ixblue_stdbin_decoder/data_models/navigation_data/ins_algorithm_status.h>
 #include <ixblue_stdbin_decoder/data_models/navigation_data/ins_system_status.h>
+#include <rclcpp/node.hpp>
 
 class DiagnosticsPublisher
 {
