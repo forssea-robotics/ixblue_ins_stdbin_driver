@@ -9,11 +9,11 @@ UDPListener::UDPListener(const std::string & ip,
                          uint16_t port,
                          StdBinDataHandlerInterface * data_handler)
     : IPListener(ip, port, data_handler),
-      socket(service, ip::udp::endpoint(ip::address::from_string(ip), port))
+      socket(context, ip::udp::endpoint(ip::make_address(ip), port))
 {
     listenNextData();
     RCLCPP_DEBUG_STREAM(rclcpp::get_logger("udp_listener"), "Starting asio thread");
-    asioThread = std::thread([&]() { service.run(); });
+    asioThread = std::thread([&]() { context.run(); });
 }
 
 void UDPListener::listenNextData()

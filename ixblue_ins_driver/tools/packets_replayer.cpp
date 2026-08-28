@@ -13,10 +13,10 @@ namespace po = boost::program_options;
 pcap_t* pcapDescriptor = nullptr;
 bool shouldRepeat = false;
 // std::shared_ptr<ip::udp::socket> UDPSocket;
-io_service service;
-ip::udp::socket UDPSocket(service);
+io_context context;
+ip::udp::socket UDPSocket(context);
 ip::udp::endpoint endPoint;
-deadline_timer timer(service);
+steady_timer timer(context);
 long period_ms;
 std::string pcapFile;
 
@@ -75,7 +75,7 @@ void processNextDataInPcapFile(const boost::system::error_code& errocode)
         }
     }
     // We restart the timer.
-    timer.expires_from_now(boost::posix_time::milliseconds(period_ms));
+    timer.expires_after(std::chrono::milliseconds(period_ms));
     timer.async_wait(processNextDataInPcapFile);
 }
 
@@ -112,14 +112,14 @@ int main(int argc, char* argv[])
     shouldRepeat = vm.count("repeat") > 0;
     period_ms = vm["period"].as<long>();
 
-    endPoint = ip::udp::endpoint(ip::address::from_string(vm["ip"].as<std::string>()),
+    endPoint = ip::udp::endpoint(ip::make_address(vm["ip"].as<std::string>()),
                                  vm["port"].as<uint16_t>());
     UDPSocket.open(ip::udp::v4());
     socket_base::reuse_address option(true);
     UDPSocket.set_option(option);
 
-    timer.expires_from_now(boost::posix_time::milliseconds(period_ms));
+    timer.expires_after(std::chrono::milliseconds(period_ms));
     timer.async_wait(processNextDataInPcapFile);
-    service.run();
+    context.run();
     return 0;
 }

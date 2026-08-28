@@ -8,12 +8,12 @@ using namespace boost::asio;
 UDPPublisher::UDPPublisher(const std::string & ip,
                          uint16_t port)
     : IPPublisher(ip, port),
-      endpoint(ip::address::from_string(ip), port),
-      socket(service)
+      endpoint(ip::make_address(ip), port),
+      socket(context)
 {
     socket.open(ip::udp::v4());
     RCLCPP_DEBUG_STREAM(rclcpp::get_logger("publisher"), "Starting asio thread");
-    asioThread = std::thread([&]() { service.run(); });
+    asioThread = std::thread([&]() { context.run(); });
 }
 
 void UDPPublisher::sendNextData(const ixblue_stdbin_decoder::Data::BinaryNav& binaryNav, uint32_t time_100us)

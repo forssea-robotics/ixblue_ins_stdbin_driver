@@ -13,7 +13,7 @@ IPListener::IPListener(std::string ip,
 
 IPListener::~IPListener()
 {
-    service.stop();
+    context.stop();
     asioThread.join();
 }
 

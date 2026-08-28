@@ -10,7 +10,7 @@
 
 /*!
  * \brief Contains the common part of TCP and UDP Publisher.
- * This class manage the io_service thread, and the onNewDataReceived method.
+ * This class manage the io_context thread, and the onNewDataReceived method.
  */
 
 class IPPublisher : private boost::noncopyable
@@ -36,6 +36,6 @@ protected:
 
     ixblue_stdbin_decoder::StdBinEncoder encoder;
 
-    boost::asio::io_service service;
+    boost::asio::io_context context;
     std::thread asioThread;
 };
