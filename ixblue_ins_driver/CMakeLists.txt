@@ -26,7 +26,7 @@ find_package(ixblue_stdbin_decoder REQUIRED)
 
 find_package(Threads)
 
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED)
 
 
 ###########
@@ -44,17 +44,16 @@ target_include_directories(${PROJECT_NAME}_output PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
         $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
         )
-target_link_libraries(${PROJECT_NAME}_output ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
-ament_target_dependencies(
-        ${PROJECT_NAME}_output
-        rclcpp
-        nav_msgs
-        std_msgs
-        sensor_msgs
-        ixblue_ins_msgs
-        diagnostic_msgs
-        diagnostic_updater
-        ixblue_stdbin_decoder
+target_link_libraries(${PROJECT_NAME}_output
+        ${Boost_LIBRARIES}
+        ixblue_stdbin_decoder::ixblue_stdbin_decoder
+        rclcpp::rclcpp
+        nav_msgs::nav_msgs
+        std_msgs::std_msgs
+        sensor_msgs::sensor_msgs
+        ixblue_ins_msgs::ixblue_ins_msgs
+        diagnostic_msgs::diagnostic_msgs
+        diagnostic_updater::diagnostic_updater
 )
 
 add_library(${PROJECT_NAME}_input
@@ -68,12 +67,11 @@ target_include_directories(${PROJECT_NAME}_input PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
         $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include>
         )
-target_link_libraries(${PROJECT_NAME}_input ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
-ament_target_dependencies(
-        ${PROJECT_NAME}_input
-        rclcpp
-        geometry_msgs
-        ixblue_stdbin_decoder
+target_link_libraries(${PROJECT_NAME}_input
+        ${Boost_LIBRARIES}
+        ixblue_stdbin_decoder::ixblue_stdbin_decoder
+        rclcpp::rclcpp
+        geometry_msgs::geometry_msgs
 )
 
 
@@ -94,10 +92,10 @@ set_target_properties(${PROJECT_NAME}_output_node PROPERTIES OUTPUT_NAME output_
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-target_link_libraries(${PROJECT_NAME}_output_node ${Boost_LIBRARIES} ${PROJECT_NAME}_output ixblue_stdbin_decoder::ixblue_stdbin_decoder)
-ament_target_dependencies(
-        ${PROJECT_NAME}_output_node
-        rclcpp
+target_link_libraries(${PROJECT_NAME}_output_node
+        ${Boost_LIBRARIES}
+        ${PROJECT_NAME}_output ixblue_stdbin_decoder::ixblue_stdbin_decoder
+        rclcpp::rclcpp
 )
 
 
@@ -118,10 +116,10 @@ set_target_properties(${PROJECT_NAME}_input_node PROPERTIES OUTPUT_NAME input_no
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-target_link_libraries(${PROJECT_NAME}_input_node ${Boost_LIBRARIES} ${PROJECT_NAME}_input ixblue_stdbin_decoder::ixblue_stdbin_decoder)
-ament_target_dependencies(
-        ${PROJECT_NAME}_input_node
-        rclcpp
+target_link_libraries(${PROJECT_NAME}_input_node
+        ${Boost_LIBRARIES}
+        ${PROJECT_NAME}_input ixblue_stdbin_decoder::ixblue_stdbin_decoder
+        rclcpp::rclcpp
 )
 
 #############
@@ -129,16 +127,14 @@ ament_target_dependencies(
 #############
 
 ## Mark executables and/or libraries for installation
-install(DIRECTORY include/
-        DESTINATION include)
-install(TARGETS ${PROJECT_NAME}_output_node ${PROJECT_NAME}_input_node
-        DESTINATION lib/${PROJECT_NAME}
-        )
-install(TARGETS ${PROJECT_NAME}_output ${PROJECT_NAME}_input
-        RUNTIME DESTINATION bin
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        )
+install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include/${PROJECT_NAME})
+install(TARGETS 
+        ${PROJECT_NAME}_output_node
+        ${PROJECT_NAME}_input_node
+        ${PROJECT_NAME}_output
+        ${PROJECT_NAME}_input
+        EXPORT ${PROJECT_NAME}Targets
+)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(
@@ -157,7 +153,7 @@ if (BUILD_TESTING)
     # that is only used for development so build and requise it as dependency
     # if tests are built
     find_package(PCAP REQUIRED)
-    find_package(Boost REQUIRED COMPONENTS system program_options)
+    find_package(Boost REQUIRED program_options)
 
     add_executable(packets_replayer tools/packets_replayer.cpp)
     target_link_libraries(packets_replayer ${PCAP_LIBRARY} ${Boost_LIBRARIES} Threads::Threads)
@@ -169,14 +165,14 @@ if (BUILD_TESTING)
             src/diagnostics_publisher.cpp
             )
     if (TARGET ${PROJECT_NAME}-test)
-        target_link_libraries(${PROJECT_NAME}-test ${Boost_LIBRARIES} ixblue_stdbin_decoder::ixblue_stdbin_decoder)
-        ament_target_dependencies(${PROJECT_NAME}-test
-                rclcpp
-                ixblue_ins_msgs
-                sensor_msgs
-                diagnostic_msgs
-                diagnostic_updater
-                )
+        target_link_libraries(${PROJECT_NAME}-test
+        ${Boost_LIBRARIES}
+        ixblue_stdbin_decoder::ixblue_stdbin_decoder
+        rclcpp::rclcpp
+        ixblue_ins_msgs::ixblue_ins_msgs
+        sensor_msgs::sensor_msgs
+        diagnostic_msgs::diagnostic_msgs
+        diagnostic_updater::diagnostic_updater)
     endif ()
 endif ()
 
@@ -186,8 +182,8 @@ endif ()
 ament_export_include_directories(
         include
 )
-ament_export_libraries(
-        ${PROJECT_NAME}_input ${PROJECT_NAME}_output
+ament_export_targets(
+        ${PROJECT_NAME}Targets HAS_LIBRARY_TARGET
 )
 ament_export_dependencies(
         ixblue_stdbin_decoder

@@ -1,2 +1,2 @@
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED)
 list(APPEND ixblue_ins_driver_LIBRARIES ${Boost_LIBRARIES})
